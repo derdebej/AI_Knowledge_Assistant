@@ -8,7 +8,10 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      # Overridable for machines where 5432 is already taken by a native
+      # Postgres install - set POSTGRES_HOST_PORT in the environment/.env
+      # used to run `docker compose`. Defaults to the standard port.
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 5s

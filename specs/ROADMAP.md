@@ -42,11 +42,11 @@ Each phase lists objectives, tasks (checkboxes), deliverables, dependencies, and
 - [x] Configure TailwindCSS (v4, via `@tailwindcss/vite`)
 - [x] Configure ESLint + `tsc --noEmit` (swapped in for Vite's default `oxlint` scaffold to match [TECHNOLOGIES.md](TECHNOLOGIES.md))
 - [x] Create root `docker-compose.yml` with `postgres` (pgvector image) service only, healthcheck
-- [ ] Verify `docker compose up postgres` starts cleanly — **blocked**: Docker is not installed on this machine. `docker-compose.yml` is written and reviewed but unverified; confirm on first Docker-enabled run or before Phase 9.
+- [x] Verify `docker compose up postgres` starts cleanly — Docker Desktop installed; container healthy. Host port is configurable (`POSTGRES_HOST_PORT`, defaults to 5432) since this machine already runs a native PostgreSQL 17 service on 5432 - local dev here uses 5433, documented in `.env.example`.
 
 **Deliverables**: runnable empty FastAPI app, runnable empty React app, Postgres+pgvector container healthy.
 **Dependencies**: Phase 0.
-**Definition of done**: `uvicorn app.main:app` serves `/docs` (verified) · `npm run dev` serves the placeholder page and proxies `/api` to the backend (verified) · `docker compose up postgres` passes its healthcheck (pending Docker installation).
+**Definition of done**: `uvicorn app.main:app` serves `/docs` (verified) · `npm run dev` serves the placeholder page and proxies `/api` to the backend (verified) · `docker compose up postgres` passes its healthcheck (verified).
 
 ---
 
@@ -54,18 +54,18 @@ Each phase lists objectives, tasks (checkboxes), deliverables, dependencies, and
 
 **Objective**: schema, migrations, file upload, extraction, chunking — everything except embeddings.
 
-- [ ] Create `app/models/` SQLAlchemy models for all tables in [DATABASE.md](DATABASE.md) §3
-- [ ] Create Alembic environment; first migration: enable `vector` extension, create all tables, create HNSW index
-- [ ] Implement `app/domain/ports.py` (`EmbeddingProvider`, `LLMProvider`, `VectorStore`, `DocumentParser`, `Chunker` interfaces)
-- [ ] Implement `DocumentParser` adapters (PDF via `pypdf`, TXT)
-- [ ] Implement text cleaning function ([RAG_PIPELINE.md](RAG_PIPELINE.md) §1.3) with unit tests
-- [ ] Implement `Chunker` adapter (LangChain `RecursiveCharacterTextSplitter` wrapper) with unit tests
-- [ ] Implement `app/repositories/document_repository.py`
-- [ ] Implement `DocumentService.upload()` (validation: extension, MIME sniff, size — [SECURITY.md](SECURITY.md) §1)
-- [ ] Implement `POST /documents`, `GET /documents`, `GET /documents/{id}`, `GET /documents/{id}/status`, `DELETE /documents/{id}` per [API.md](API.md) §2
-- [ ] Implement local disk storage (`UPLOAD_STORAGE_PATH`, sanitized paths)
-- [ ] Wire background processing trigger (FastAPI `BackgroundTasks`) that runs extraction + cleaning + chunking and persists chunks (embedding step stubbed/skipped until Phase 3)
-- [ ] Integration tests: migrations apply cleanly, repository CRUD + cascade deletes, upload endpoint incl. rejection cases
+- [x] Create `app/models/` SQLAlchemy models for all tables in [DATABASE.md](DATABASE.md) §3
+- [x] Create Alembic environment; first migration: enable `vector` extension, create all tables, create HNSW index
+- [x] Implement `app/domain/ports.py` (`EmbeddingProvider`, `LLMProvider`, `VectorStore`, `DocumentParser`, `Chunker` interfaces)
+- [x] Implement `DocumentParser` adapters (PDF via `pypdf`, TXT)
+- [x] Implement text cleaning function ([RAG_PIPELINE.md](RAG_PIPELINE.md) §1.3) with unit tests
+- [x] Implement `Chunker` adapter (LangChain `RecursiveCharacterTextSplitter` wrapper) with unit tests
+- [x] Implement `app/repositories/document_repository.py`
+- [x] Implement `DocumentService.upload()` (validation: extension, MIME sniff, size — [SECURITY.md](SECURITY.md) §1)
+- [x] Implement `POST /documents`, `GET /documents`, `GET /documents/{id}`, `GET /documents/{id}/status`, `DELETE /documents/{id}` per [API.md](API.md) §2
+- [x] Implement local disk storage (`UPLOAD_STORAGE_PATH`, sanitized paths)
+- [x] Wire background processing trigger (FastAPI `BackgroundTasks`) that runs extraction + cleaning + chunking and persists chunks (embedding step stubbed/skipped until Phase 3)
+- [x] Integration tests: migrations apply cleanly, repository CRUD + cascade deletes, upload endpoint incl. rejection cases
 
 **Deliverables**: users can upload a PDF/TXT and see it chunked and stored (no embeddings yet); `status` transitions correctly.
 **Dependencies**: Phase 1.

@@ -129,15 +129,17 @@ Indexes: `idx_documents_user_id` on `(user_id)`; `idx_documents_user_status` on 
 | chunk_index | INT | NOT NULL (0-based order within the document) |
 | content | TEXT | NOT NULL |
 | token_count | INT | NOT NULL |
-| embedding | `VECTOR(1536)` | NOT NULL (pgvector type; 1536 = `text-embedding-3-small` dimensionality) |
+| embedding | `VECTOR(1536)` | **NULL** (pgvector type; 1536 = `text-embedding-3-small` dimensionality) |
 | chunk_metadata | JSONB | NOT NULL, default `{}` (e.g. `{"page_number": 4}`) |
 | created_at | TIMESTAMPTZ | NOT NULL, default `now()` |
 
 Constraints: `UNIQUE(document_id, chunk_index)`.
 
+> **`embedding` is nullable, not `NOT NULL`.** Chunk rows are inserted immediately after chunking (extract → clean → chunk), before embeddings exist — this lets ingestion progress be inspected mid-pipeline and lets a future re-embedding (e.g., switching embedding models) update vectors in place without re-chunking. A document only reaches `status=completed` (and therefore becomes eligible for retrieval) once every one of its chunks has a non-null `embedding`; `RetrievalService`'s similarity search additionally filters `WHERE embedding IS NOT NULL` as defense in depth against querying a partially-embedded document. This is a deliberate revision from an earlier draft of this spec that marked the column `NOT NULL`; recorded here rather than silently changed because [ROADMAP.md](ROADMAP.md) Phase 2/3 depends on the distinction (chunk persistence in Phase 2, embedding population in Phase 3).
+
 Indexes:
 - `idx_chunks_document_id` on `(document_id)` — used for cascade lookups and re-processing.
-- **HNSW vector index**: `CREATE INDEX idx_chunks_embedding_hnsw ON document_chunks USING hnsw (embedding vector_cosine_ops);` — see §5 for the HNSW-vs-IVFFlat rationale.
+- **HNSW vector index**: `CREATE INDEX idx_chunks_embedding_hnsw ON document_chunks USING hnsw (embedding vector_cosine_ops);` — pgvector simply excludes NULL embeddings from the index, so this is safe to create before any chunk has been embedded. See §5 for the HNSW-vs-IVFFlat rationale.
 
 ### 3.4 `conversations`
 
