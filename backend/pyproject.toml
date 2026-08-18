@@ -1,0 +1,66 @@
+[project]
+name = "ai-knowledge-assistant"
+version = "0.1.0"
+description = "Production-oriented RAG platform for document Q&A."
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.19.1",
+    "asyncpg>=0.31.0",
+    "fastapi>=0.141.1",
+    "langchain-text-splitters>=1.1.2",
+    "openai>=3.2.0",
+    "passlib[bcrypt]>=1.7.4",
+    "pgvector>=0.5.0",
+    "pydantic-settings>=2.15.0",
+    "pypdf>=6.16.1",
+    "python-jose[cryptography]>=3.5.0",
+    "python-magic>=0.4.27 ; sys_platform != 'win32'",
+    "python-magic-bin>=0.4.14 ; sys_platform == 'win32'",
+    "python-multipart>=0.0.32",
+    "sqlalchemy[asyncio]>=2.0.52",
+    "structlog>=26.1.0",
+    "uvicorn[standard]>=0.52.3",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "mypy>=2.3.1",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.3",
+    "types-passlib>=1.7.7.20260211",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["app", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["app"]
+strict = true
+plugins = ["pydantic.mypy"]
+disallow_untyped_decorators = false
+
+[[tool.mypy.overrides]]
+module = ["magic.*", "pypdf.*", "passlib.*", "jose.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/main.py"]
