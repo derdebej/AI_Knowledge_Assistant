@@ -129,12 +129,12 @@ Each phase lists objectives, tasks (checkboxes), deliverables, dependencies, and
 
 **Objective**: basic JWT auth and data isolation, moved here (rather than Phase 1) so it's built once the resources it protects already exist — but *before* the frontend, so the frontend is built against a real auth flow from the start.
 
-- [ ] Implement `app/models`/`repositories/user_repository.py`
-- [ ] Implement password hashing (`passlib`/bcrypt), JWT encode/decode (`python-jose`)
-- [ ] Implement `POST /auth/register`, `POST /auth/login` per [API.md](API.md) §1
-- [ ] Implement the auth dependency (`get_current_user`) and apply it to all document/chat routes
-- [ ] Retrofit `user_id` scoping into every repository method from Phases 2–5 (documents, conversations, messages)
-- [ ] Integration tests: register/login flow, protected-route rejection without token, cross-user access returns `404`
+- [x] Implement `app/models`/`repositories/user_repository.py`
+- [x] Implement password hashing (`passlib`/bcrypt), JWT encode/decode (`python-jose`)
+- [x] Implement `POST /auth/register`, `POST /auth/login` per [API.md](API.md) §1
+- [x] Implement the auth dependency (`get_current_user`) and apply it to all document/chat routes
+- [x] Retrofit `user_id` scoping into every repository method from Phases 2–5 (documents, conversations, messages)
+- [x] Integration tests: register/login flow, protected-route rejection without token, cross-user access returns `404`
 
 **Deliverables**: fully authenticated API; every prior endpoint now enforces ownership.
 **Dependencies**: Phases 2–5 (retrofits their repositories).

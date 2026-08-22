@@ -48,3 +48,14 @@ class ConversationNotFoundError(DomainError):
 class DocumentOwnershipError(DomainError):
     """Raised when a conversation is scoped to a `document_id` that doesn't belong to
     the requesting user - see specs/API.md §3 (`POST /conversations`, `400`)."""
+
+
+class EmailAlreadyRegisteredError(DomainError):
+    """Raised on registration when the email is already in use - specs/API.md §1 (`409`)."""
+
+
+class InvalidCredentialsError(DomainError):
+    """Raised on login when the email/password combination doesn't match -
+    specs/API.md §1 (`401`). Deliberately the same error for "no such user"
+    and "wrong password" (specs/SECURITY.md §4) - distinguishing them would
+    let a caller enumerate registered emails."""

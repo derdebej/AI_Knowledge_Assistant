@@ -1,38 +1,52 @@
 """FastAPI dependencies shared across routers.
 
-`get_current_user_id` is a **Phase 6 placeholder**: real JWT-based auth
-(specs/ROADMAP.md Phase 6) will replace this with a dependency that decodes
-the bearer token. Every document/chat repository method already takes
-`user_id` (specs/ARCHITECTURE.md §2.6), so that swap touches only this
-function - no service, repository, or route signature changes.
+`get_current_user_id` decodes the bearer JWT (specs/SECURITY.md §4) and
+resolves the current user's id. Every document/chat repository method
+already takes `user_id` (specs/ARCHITECTURE.md §2.6), so Phase 6 auth plugs
+in at exactly this one function - no service, repository, or route
+signature changes (see specs/ROADMAP.md Phase 6).
 """
 
 import uuid
 from typing import Annotated
 
-from fastapi import Depends
-from sqlalchemy import select
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app.core.di import SessionDep
-from app.models.user import User
+from app.core.di import SessionDep, SettingsDep
+from app.core.security import decode_access_token
+from app.repositories.user_repository import UserRepository
 
-_PLACEHOLDER_DEV_USER_EMAIL = "dev-placeholder@local"
+# `auto_error=False` so a missing header raises our own 401 (matching the
+# rest of the app's error handling) instead of FastAPI security's default
+# response shape.
+_bearer_scheme = HTTPBearer(auto_error=False)
+
+_UNAUTHENTICATED = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated"
+)
 
 
-async def get_current_user_id(session: SessionDep) -> uuid.UUID:
-    result = await session.execute(select(User.id).where(User.email == _PLACEHOLDER_DEV_USER_EMAIL))
-    user_id = result.scalar_one_or_none()
-    if user_id is not None:
-        return user_id
+async def get_current_user_id(
+    settings: SettingsDep,
+    session: SessionDep,
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(_bearer_scheme)],
+) -> uuid.UUID:
+    if credentials is None:
+        raise _UNAUTHENTICATED
 
-    user = User(
-        email=_PLACEHOLDER_DEV_USER_EMAIL,
-        hashed_password="unusable-placeholder-hash",
-        is_active=True,
-    )
-    session.add(user)
-    await session.flush()
-    return user.id
+    user_id = decode_access_token(credentials.credentials, settings=settings)
+    if user_id is None:
+        raise _UNAUTHENTICATED
+
+    # Confirms the token's subject still resolves to a real, active user -
+    # e.g. one deleted after the token was issued shouldn't stay usable
+    # until expiry.
+    user = await UserRepository(session).get_by_id(user_id)
+    if user is None or not user.is_active:
+        raise _UNAUTHENTICATED
+
+    return user_id
 
 
 CurrentUserIdDep = Annotated[uuid.UUID, Depends(get_current_user_id)]

@@ -23,6 +23,8 @@ from app.repositories.chunk_repository import ChunkRepository
 from app.repositories.conversation_repository import ConversationRepository
 from app.repositories.document_repository import DocumentRepository
 from app.repositories.message_repository import MessageRepository
+from app.repositories.user_repository import UserRepository
+from app.services.auth_service import AuthService
 from app.services.chat_service import ChatService
 from app.services.document_service import DocumentService
 from app.services.ingestion_service import IngestionService
@@ -105,6 +107,17 @@ def get_llm_provider() -> LLMProvider:
     return OpenAILLMProvider(
         client=get_openai_client(), model=settings.llm_model, temperature=settings.llm_temperature
     )
+
+
+def get_user_repository(session: SessionDep) -> UserRepository:
+    return UserRepository(session)
+
+
+def get_auth_service(
+    user_repository: Annotated[UserRepository, Depends(get_user_repository)],
+    settings: SettingsDep,
+) -> AuthService:
+    return AuthService(user_repository=user_repository, settings=settings)
 
 
 def get_conversation_repository(session: SessionDep) -> ConversationRepository:

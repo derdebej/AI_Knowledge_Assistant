@@ -12,7 +12,9 @@ from app.domain.exceptions import (
     ConversationNotFoundError,
     DocumentNotFoundError,
     DocumentOwnershipError,
+    EmailAlreadyRegisteredError,
     FileTooLargeError,
+    InvalidCredentialsError,
     UnsupportedFileTypeError,
 )
 
@@ -22,6 +24,8 @@ _HANDLED_EXCEPTIONS: dict[type[Exception], tuple[int, str]] = {
     DocumentNotFoundError: (status.HTTP_404_NOT_FOUND, "DOCUMENT_NOT_FOUND"),
     ConversationNotFoundError: (status.HTTP_404_NOT_FOUND, "CONVERSATION_NOT_FOUND"),
     DocumentOwnershipError: (status.HTTP_400_BAD_REQUEST, "INVALID_DOCUMENT_SCOPE"),
+    EmailAlreadyRegisteredError: (status.HTTP_409_CONFLICT, "EMAIL_ALREADY_REGISTERED"),
+    InvalidCredentialsError: (status.HTTP_401_UNAUTHORIZED, "INVALID_CREDENTIALS"),
 }
 
 

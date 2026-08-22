@@ -198,3 +198,41 @@ async def client(
             yield async_client
     finally:
         app.dependency_overrides.clear()
+
+
+@pytest_asyncio.fixture
+async def real_auth_client(
+    test_session_factory: async_sessionmaker[AsyncSession],
+) -> AsyncGenerator[AsyncClient]:
+    """Like `client`, but does NOT override `get_current_user_id` - identity
+    comes from a real register/login flow and a real bearer token, for
+    testing the JWT dependency itself (specs/ROADMAP.md Phase 6) rather than
+    bypassing it. Only `get_db_session` (point at the test DB) and
+    `get_ingestion_service` (fake embeddings, so an upload in one of these
+    tests doesn't hit real OpenAI) are overridden."""
+
+    async def override_get_db_session() -> AsyncGenerator[AsyncSession]:
+        async with test_session_factory() as session:
+            try:
+                yield session
+                await session.commit()
+            except Exception:
+                await session.rollback()
+                raise
+
+    def override_get_ingestion_service() -> IngestionService:
+        return IngestionService(
+            chunker=get_chunker(),
+            embedding_provider=FakeEmbeddingProvider(),
+            vector_store_factory=PgVectorStore,
+            session_factory=test_session_factory,
+        )
+
+    app.dependency_overrides[get_db_session] = override_get_db_session
+    app.dependency_overrides[get_ingestion_service] = override_get_ingestion_service
+    try:
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as async_client:
+            yield async_client
+    finally:
+        app.dependency_overrides.clear()
