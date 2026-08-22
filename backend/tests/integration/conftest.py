@@ -23,7 +23,9 @@ from app.db.base import Base
 from app.db.session import get_db_session
 from app.main import app
 from app.models.user import User
+from app.rag.vector_store.pgvector_store import PgVectorStore
 from app.services.ingestion_service import IngestionService
+from tests.fakes import FakeEmbeddingProvider
 
 _BACKEND_ROOT = Path(__file__).resolve().parent.parent.parent
 _TEST_DB_NAME = "ai_knowledge_assistant_test"
@@ -128,7 +130,16 @@ async def client(
         return user_id
 
     def override_get_ingestion_service() -> IngestionService:
-        return IngestionService(chunker=get_chunker(), session_factory=test_session_factory)
+        # Real chunker, real PgVectorStore (against the real test DB) - only
+        # the embedding provider is faked, per specs/TESTING.md §3, so tests
+        # never hit the real OpenAI API but still exercise real pgvector
+        # storage/retrieval.
+        return IngestionService(
+            chunker=get_chunker(),
+            embedding_provider=FakeEmbeddingProvider(),
+            vector_store_factory=PgVectorStore,
+            session_factory=test_session_factory,
+        )
 
     user_id = test_user.id
     app.dependency_overrides[get_db_session] = override_get_db_session

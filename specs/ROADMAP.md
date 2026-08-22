@@ -77,13 +77,13 @@ Each phase lists objectives, tasks (checkboxes), deliverables, dependencies, and
 
 **Objective**: complete the ingestion pipeline with real embeddings; implement retrieval.
 
-- [ ] Implement `OpenAIEmbeddingProvider` (batched calls, `text-embedding-3-small`)
-- [ ] Implement `FakeEmbeddingProvider` for tests ([TESTING.md](TESTING.md) §5)
-- [ ] Implement `PgVectorStore` (`upsert`, `similarity_search` with `user_id` + optional `document_id` filtering)
-- [ ] Wire embedding step into `IngestionService`; document reaches `status=completed` only after embeddings are stored
-- [ ] Implement `RetrievalService.retrieve()`: embed query, similarity search, Top-K=5, threshold ≥0.75 filter ([RAG_PIPELINE.md](RAG_PIPELINE.md) §2.3)
-- [ ] Unit tests for Top-K + threshold + scoping logic against `FakeVectorStore`
-- [ ] Integration test: seed known chunks/embeddings, verify pgvector similarity ordering and HNSW index usage (`EXPLAIN`)
+- [x] Implement `OpenAIEmbeddingProvider` (batched calls, `text-embedding-3-small`)
+- [x] Implement `FakeEmbeddingProvider` for tests ([TESTING.md](TESTING.md) §5)
+- [x] Implement `PgVectorStore` (`upsert`, `similarity_search` with `user_id` + optional `document_id` filtering)
+- [x] Wire embedding step into `IngestionService`; document reaches `status=completed` only after embeddings are stored
+- [x] Implement `RetrievalService.retrieve()`: embed query, similarity search, Top-K=5, threshold ≥0.75 filter ([RAG_PIPELINE.md](RAG_PIPELINE.md) §2.3)
+- [x] Unit tests for Top-K + threshold + scoping logic against `FakeVectorStore`
+- [x] Integration test: seed known chunks/embeddings, verify pgvector similarity ordering and HNSW index usage (`EXPLAIN`)
 
 **Deliverables**: end-to-end ingestion with real embeddings; a retrieval function that returns correctly ranked, correctly filtered chunks.
 **Dependencies**: Phase 2.
