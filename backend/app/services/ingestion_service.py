@@ -77,7 +77,9 @@ class IngestionService:
                         "original_filename": document.original_filename,
                         "page_number": page.page_number,
                     }
-                    all_chunks.extend(self._chunker.split(cleaned_text, base_metadata=base_metadata))
+                    all_chunks.extend(
+                        self._chunker.split(cleaned_text, base_metadata=base_metadata)
+                    )
 
                 # Each page was chunked independently (chunk_index restarts at 0
                 # per page) - renumber sequentially across the whole document to
@@ -123,7 +125,10 @@ class IngestionService:
                     error=str(exc),
                 )
                 await document_repository.update_status(
-                    document_id, user_id=user_id, status=DocumentStatus.FAILED, error_message=str(exc)
+                    document_id,
+                    user_id=user_id,
+                    status=DocumentStatus.FAILED,
+                    error_message=str(exc),
                 )
                 await session.commit()
             except Exception as exc:

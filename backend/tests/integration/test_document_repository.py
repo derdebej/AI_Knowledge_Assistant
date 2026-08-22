@@ -39,7 +39,9 @@ class TestDocumentRepository:
         assert fetched.id == created.id
         assert fetched.status == DocumentStatus.PENDING
 
-    async def test_get_by_id_scoped_to_owner(self, db_session: AsyncSession, test_user: User) -> None:
+    async def test_get_by_id_scoped_to_owner(
+        self, db_session: AsyncSession, test_user: User
+    ) -> None:
         repo = DocumentRepository(db_session)
         created = await _create_document(repo, test_user)
         await db_session.commit()
@@ -162,7 +164,9 @@ class TestChunkRepository:
         await db_session.commit()
 
         db_session.add(
-            DocumentChunk(document_id=document.id, chunk_index=0, content="duplicate", token_count=1)
+            DocumentChunk(
+                document_id=document.id, chunk_index=0, content="duplicate", token_count=1
+            )
         )
         with pytest.raises(IntegrityError):
             await db_session.commit()

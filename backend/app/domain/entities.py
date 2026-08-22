@@ -54,6 +54,11 @@ class Citation:
     rank and score - reflects what was shown to the model, not a claim about
     which specific sentence it drew from (specs/RAG_PIPELINE.md §2.8).
 
+    `document_name`/`page_number` are carried here (denormalized from the
+    chunk's metadata, same as `RetrievedChunk`) so both the SSE `citations`
+    event and the persisted-message display shape (specs/API.md §3) can be
+    built from this one entity without a second DB round-trip.
+
     Carries no `message_id`: that's only assigned when a message is actually
     persisted (as a `message_citations` row - specs/DATABASE.md §3.7), which
     is outside ChatService's concern (specs/ROADMAP.md Phase 4 vs Phase 5).
@@ -61,6 +66,8 @@ class Citation:
 
     chunk_id: str
     document_id: str
+    document_name: str
+    page_number: int | None
     similarity_score: float
     rank: int
 
@@ -71,3 +78,15 @@ class ChatAnswer:
 
     content: str
     citations: list[Citation]
+
+
+@dataclass(frozen=True)
+class ChatStreamEvent:
+    """One SSE frame's worth of data, still framework-free - the API layer
+    (specs/ARCHITECTURE.md §2.1) is what knows how to format this as
+    `event: ...\\ndata: ...` wire bytes. `event` is one of "token",
+    "citations", or "done" (specs/API.md §3); "error" is added by the API
+    layer itself when generation fails, not yielded from here."""
+
+    event: str
+    data: dict[str, Any]

@@ -139,8 +139,12 @@ class FakeLLMProvider:
         if self._raise_if_called:
             raise AssertionError("LLMProvider.stream() should not have been called")
         self.received_prompts.append(prompt)
-        for word in self._response.split(" "):
-            yield f"{word} "
+        words = self._response.split(" ")
+        for index, word in enumerate(words):
+            # No trailing space on the last word - "".join(deltas) must
+            # reconstruct `self._response` exactly, since callers persist the
+            # joined stream as the message content (specs/ROADMAP.md Phase 5).
+            yield word if index == len(words) - 1 else f"{word} "
 
 
 def _cosine_similarity(a: list[float], b: list[float]) -> float:

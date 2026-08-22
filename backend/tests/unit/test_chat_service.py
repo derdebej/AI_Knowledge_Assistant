@@ -5,8 +5,14 @@ specs/TESTING.md §2 and specs/RAG_PIPELINE.md §5, §2.8.
 """
 
 import uuid
+from typing import cast
+
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.rag.prompting.prompt_builder import NOT_FOUND_MESSAGE
+from app.repositories.conversation_repository import ConversationRepository
+from app.repositories.document_repository import DocumentRepository
+from app.repositories.message_repository import MessageRepository
 from app.services.chat_service import ChatService
 from app.services.retrieval_service import RetrievalService
 from tests.fakes import FakeLLMProvider, FakeVectorStore
@@ -22,6 +28,12 @@ class _FixedEmbeddingProvider:
 
 _QUERY_VECTOR = [1.0, 0.0]
 
+# `ask()` (the only method these tests exercise) never touches the
+# repositories - they exist on ChatService purely for the Phase 5
+# conversation/message use cases. A session-less repository is harmless here
+# since none of its methods are ever called.
+_UNUSED_SESSION = cast(AsyncSession, None)
+
 
 def _make_chat_service(
     vector_store: FakeVectorStore, llm_provider: FakeLLMProvider, *, top_k: int = 5
@@ -32,7 +44,13 @@ def _make_chat_service(
         top_k=top_k,
         relevance_threshold=0.75,
     )
-    return ChatService(retrieval_service=retrieval_service, llm_provider=llm_provider)
+    return ChatService(
+        retrieval_service=retrieval_service,
+        llm_provider=llm_provider,
+        document_repository=DocumentRepository(_UNUSED_SESSION),
+        conversation_repository=ConversationRepository(_UNUSED_SESSION),
+        message_repository=MessageRepository(_UNUSED_SESSION),
+    )
 
 
 class TestChatServiceNotFoundShortCircuit:

@@ -113,11 +113,11 @@ Each phase lists objectives, tasks (checkboxes), deliverables, dependencies, and
 
 **Objective**: expose conversations/messages over REST, including streaming.
 
-- [ ] Implement `app/models`/`repositories` for `conversations`, `conversation_documents`, `messages`, `message_citations`
-- [ ] Implement `POST /conversations`, `GET /conversations`, `GET /conversations/{id}`, `GET /conversations/{id}/messages` per [API.md](API.md) §3
-- [ ] Implement `POST /conversations/{id}/messages` with SSE streaming (`token`, `citations`, `done`, `error` events)
-- [ ] Enforce document-ownership check when scoping a conversation to `document_ids`
-- [ ] Integration tests: full conversation lifecycle, SSE event sequence assertions, ownership rejection (`400`/`404`) cases
+- [x] Implement `app/models`/`repositories` for `conversations`, `conversation_documents`, `messages`, `message_citations`
+- [x] Implement `POST /conversations`, `GET /conversations`, `GET /conversations/{id}`, `GET /conversations/{id}/messages` per [API.md](API.md) §3
+- [x] Implement `POST /conversations/{id}/messages` with SSE streaming (`token`, `citations`, `done`, `error` events)
+- [x] Enforce document-ownership check when scoping a conversation to `document_ids`
+- [x] Integration tests: full conversation lifecycle, SSE event sequence assertions, ownership rejection (`400`/`404`) cases
 
 **Deliverables**: complete chat REST API, streaming functional via `curl`/Postman.
 **Dependencies**: Phase 4.

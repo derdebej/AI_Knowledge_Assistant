@@ -39,3 +39,12 @@ class NoRelevantContextError(DomainError):
     See specs/RAG_PIPELINE.md §5 - this is what triggers the "not found in your
     documents" short-circuit before any LLM call is made.
     """
+
+
+class ConversationNotFoundError(DomainError):
+    """Raised when a conversation does not exist or does not belong to the requesting user."""
+
+
+class DocumentOwnershipError(DomainError):
+    """Raised when a conversation is scoped to a `document_id` that doesn't belong to
+    the requesting user - see specs/API.md §3 (`POST /conversations`, `400`)."""

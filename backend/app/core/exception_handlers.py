@@ -9,7 +9,9 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
 from app.domain.exceptions import (
+    ConversationNotFoundError,
     DocumentNotFoundError,
+    DocumentOwnershipError,
     FileTooLargeError,
     UnsupportedFileTypeError,
 )
@@ -18,6 +20,8 @@ _HANDLED_EXCEPTIONS: dict[type[Exception], tuple[int, str]] = {
     UnsupportedFileTypeError: (status.HTTP_400_BAD_REQUEST, "UNSUPPORTED_FILE_TYPE"),
     FileTooLargeError: (status.HTTP_413_CONTENT_TOO_LARGE, "FILE_TOO_LARGE"),
     DocumentNotFoundError: (status.HTTP_404_NOT_FOUND, "DOCUMENT_NOT_FOUND"),
+    ConversationNotFoundError: (status.HTTP_404_NOT_FOUND, "CONVERSATION_NOT_FOUND"),
+    DocumentOwnershipError: (status.HTTP_400_BAD_REQUEST, "INVALID_DOCUMENT_SCOPE"),
 }
 
 

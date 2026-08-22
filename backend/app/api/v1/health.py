@@ -22,9 +22,7 @@ async def health_ready(
 ) -> dict[str, str]:
     try:
         await session.execute(text("SELECT 1"))
-        result = await session.execute(
-            text("SELECT 1 FROM pg_extension WHERE extname = 'vector'")
-        )
+        result = await session.execute(text("SELECT 1 FROM pg_extension WHERE extname = 'vector'"))
         if result.first() is None:
             raise RuntimeError("pgvector extension not installed")
     except Exception:

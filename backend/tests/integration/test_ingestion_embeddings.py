@@ -39,9 +39,7 @@ class TestIngestionStoresEmbeddings:
         chunks = (
             (
                 await db_session.execute(
-                    select(DocumentChunk).where(
-                        DocumentChunk.document_id == uuid.UUID(document_id)
-                    )
+                    select(DocumentChunk).where(DocumentChunk.document_id == uuid.UUID(document_id))
                 )
             )
             .scalars()
@@ -49,9 +47,7 @@ class TestIngestionStoresEmbeddings:
         )
         assert len(chunks) >= 1
         assert all(chunk.embedding is not None for chunk in chunks)
-        assert all(
-            len(chunk.embedding) == get_settings().embedding_dimensions for chunk in chunks
-        )
+        assert all(len(chunk.embedding) == get_settings().embedding_dimensions for chunk in chunks)
 
 
 class TestRetrievalServiceEndToEnd:
@@ -74,9 +70,7 @@ class TestRetrievalServiceEndToEnd:
             relevance_threshold=get_settings().relevance_threshold,
         )
 
-        results = await retrieval_service.retrieve(
-            _KNOWN_CONTENT.decode(), user_id=test_user.id
-        )
+        results = await retrieval_service.retrieve(_KNOWN_CONTENT.decode(), user_id=test_user.id)
 
         assert len(results) == 1
         assert results[0].document_id == document_id

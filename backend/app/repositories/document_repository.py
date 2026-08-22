@@ -56,6 +56,16 @@ class DocumentRepository:
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
+    async def get_by_ids(
+        self, document_ids: list[uuid.UUID], *, user_id: uuid.UUID
+    ) -> list[Document]:
+        """Returns only the documents that both exist and belong to `user_id` -
+        silently dropping the rest is what lets the caller detect ownership
+        violations by comparing counts (specs/API.md §3)."""
+        stmt = select(Document).where(Document.id.in_(document_ids), Document.user_id == user_id)
+        result = await self._session.execute(stmt)
+        return list(result.scalars().all())
+
     async def list_for_user(
         self,
         *,

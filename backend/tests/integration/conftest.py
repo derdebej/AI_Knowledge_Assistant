@@ -9,23 +9,31 @@ import os
 import uuid
 from collections.abc import AsyncGenerator
 from pathlib import Path
+from typing import Annotated
 
 import pytest_asyncio
 from alembic import command
 from alembic.config import Config
+from fastapi import Depends
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from app.core.config import get_settings
 from app.core.deps import get_current_user_id
-from app.core.di import get_chunker, get_ingestion_service
+from app.core.di import get_chat_service, get_chunker, get_ingestion_service
 from app.db.base import Base
 from app.db.session import get_db_session
 from app.main import app
 from app.models.user import User
 from app.rag.vector_store.pgvector_store import PgVectorStore
+from app.repositories.conversation_repository import ConversationRepository
+from app.repositories.document_repository import DocumentRepository
+from app.repositories.message_repository import MessageRepository
+from app.services.chat_service import ChatService
 from app.services.ingestion_service import IngestionService
-from tests.fakes import FakeEmbeddingProvider
+from app.services.retrieval_service import RetrievalService
+from tests.fakes import FakeEmbeddingProvider, FakeLLMProvider
 
 _BACKEND_ROOT = Path(__file__).resolve().parent.parent.parent
 _TEST_DB_NAME = "ai_knowledge_assistant_test"
@@ -37,7 +45,9 @@ _APP_TABLE_NAMES = [table.name for table in Base.metadata.sorted_tables]
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def _migrated_test_database() -> AsyncGenerator[None]:
-    maintenance_engine = create_async_engine(_MAINTENANCE_DATABASE_URL, isolation_level="AUTOCOMMIT")
+    maintenance_engine = create_async_engine(
+        _MAINTENANCE_DATABASE_URL, isolation_level="AUTOCOMMIT"
+    )
     async with maintenance_engine.connect() as conn:
         exists = await conn.scalar(
             text("SELECT 1 FROM pg_database WHERE datname = :name"), {"name": _TEST_DB_NAME}
@@ -114,8 +124,19 @@ async def test_user(db_session: AsyncSession) -> User:
 
 
 @pytest_asyncio.fixture
+def chat_llm_provider() -> FakeLLMProvider:
+    """One instance shared by every request the `client` fixture makes in a
+    given test, so a test can both configure its canned response ahead of
+    time and inspect `.received_prompts` afterward - see
+    tests/integration/test_chat_api.py."""
+    return FakeLLMProvider(response="This is a fake answer.")
+
+
+@pytest_asyncio.fixture
 async def client(
-    test_session_factory: async_sessionmaker[AsyncSession], test_user: User
+    test_session_factory: async_sessionmaker[AsyncSession],
+    test_user: User,
+    chat_llm_provider: FakeLLMProvider,
 ) -> AsyncGenerator[AsyncClient]:
     async def override_get_db_session() -> AsyncGenerator[AsyncSession]:
         async with test_session_factory() as session:
@@ -141,10 +162,36 @@ async def client(
             session_factory=test_session_factory,
         )
 
+    async def override_get_chat_service(
+        session: Annotated[AsyncSession, Depends(get_db_session)],
+    ) -> ChatService:
+        # Same idea as `override_get_ingestion_service`: real repositories/
+        # PgVectorStore against the real test DB, only the embedding/LLM
+        # providers are faked. `Depends(get_db_session)` (the original, not
+        # `override_get_db_session` directly) is what FastAPI's override
+        # mechanism keys its per-request cache on, so this shares the exact
+        # same session as every other SessionDep-based dependency in the
+        # request - required for the streaming endpoint, where the user
+        # message write and the retrieval read must see each other.
+        settings = get_settings()
+        return ChatService(
+            retrieval_service=RetrievalService(
+                embedding_provider=FakeEmbeddingProvider(),
+                vector_store=PgVectorStore(session),
+                top_k=settings.retrieval_top_k,
+                relevance_threshold=settings.relevance_threshold,
+            ),
+            llm_provider=chat_llm_provider,
+            document_repository=DocumentRepository(session),
+            conversation_repository=ConversationRepository(session),
+            message_repository=MessageRepository(session),
+        )
+
     user_id = test_user.id
     app.dependency_overrides[get_db_session] = override_get_db_session
     app.dependency_overrides[get_current_user_id] = override_get_current_user_id
     app.dependency_overrides[get_ingestion_service] = override_get_ingestion_service
+    app.dependency_overrides[get_chat_service] = override_get_chat_service
     try:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as async_client:

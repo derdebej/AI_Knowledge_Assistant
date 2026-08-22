@@ -57,7 +57,9 @@ class VectorStore(Protocol):
     specs/RAG_PIPELINE.md §2.3 for the Top-K/threshold/filtering contract.
     """
 
-    async def upsert_embeddings(self, chunk_ids: list[str], embeddings: list[list[float]]) -> None: ...
+    async def upsert_embeddings(
+        self, chunk_ids: list[str], embeddings: list[list[float]]
+    ) -> None: ...
 
     async def similarity_search(
         self,

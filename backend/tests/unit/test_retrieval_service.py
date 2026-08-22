@@ -98,9 +98,7 @@ class TestRetrievalServiceScoping:
         user_id = uuid.uuid4()
         other_user_id = uuid.uuid4()
         store = FakeVectorStore()
-        store.seed(
-            document_id="doc-1", user_id=str(user_id), content="mine", embedding=[1.0, 0.0]
-        )
+        store.seed(document_id="doc-1", user_id=str(user_id), content="mine", embedding=[1.0, 0.0])
         store.seed(
             document_id="doc-2",
             user_id=str(other_user_id),

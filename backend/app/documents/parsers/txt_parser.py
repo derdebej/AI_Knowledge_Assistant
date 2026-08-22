@@ -19,4 +19,6 @@ class TxtDocumentParser:
         if not text.strip():
             raise EmptyExtractionError("Text file is empty.")
 
-        return ExtractedDocument(pages=[ExtractedPage(page_number=None, text=text)], page_count=None)
+        return ExtractedDocument(
+            pages=[ExtractedPage(page_number=None, text=text)], page_count=None
+        )

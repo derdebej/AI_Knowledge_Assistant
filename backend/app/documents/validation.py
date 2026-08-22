@@ -28,22 +28,20 @@ def sanitize_filename(original_filename: str) -> str:
     return _UNSAFE_FILENAME_CHARS_RE.sub("_", base_name) or "upload"
 
 
-def validate_upload(
-    *, original_filename: str, file_bytes: bytes, settings: Settings
-) -> str:
+def validate_upload(*, original_filename: str, file_bytes: bytes, settings: Settings) -> str:
     """Validates extension, sniffed content, and size. Returns the sniffed MIME type.
 
     Raises `UnsupportedFileTypeError` or `FileTooLargeError` on rejection.
     """
     max_bytes = settings.max_upload_size_mb * 1024 * 1024
     if len(file_bytes) > max_bytes:
-        raise FileTooLargeError(
-            f"File exceeds the {settings.max_upload_size_mb} MB limit."
-        )
+        raise FileTooLargeError(f"File exceeds the {settings.max_upload_size_mb} MB limit.")
     if not file_bytes:
         raise UnsupportedFileTypeError("Uploaded file is empty.")
 
-    extension = "." + original_filename.rsplit(".", 1)[-1].lower() if "." in original_filename else ""
+    extension = (
+        "." + original_filename.rsplit(".", 1)[-1].lower() if "." in original_filename else ""
+    )
     if extension not in settings.allowed_upload_extensions:
         raise UnsupportedFileTypeError(
             f"Extension '{extension}' is not allowed. Allowed: {settings.allowed_upload_extensions}."

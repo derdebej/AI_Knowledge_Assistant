@@ -14,6 +14,9 @@ from app.core.config import get_settings
 from app.models.user import User
 from app.rag.prompting.prompt_builder import NOT_FOUND_MESSAGE
 from app.rag.vector_store.pgvector_store import PgVectorStore
+from app.repositories.conversation_repository import ConversationRepository
+from app.repositories.document_repository import DocumentRepository
+from app.repositories.message_repository import MessageRepository
 from app.services.chat_service import ChatService
 from app.services.retrieval_service import RetrievalService
 from tests.fakes import FakeEmbeddingProvider, FakeLLMProvider
@@ -31,6 +34,9 @@ def _make_chat_service(db_session: AsyncSession, llm_provider: FakeLLMProvider) 
             relevance_threshold=settings.relevance_threshold,
         ),
         llm_provider=llm_provider,
+        document_repository=DocumentRepository(db_session),
+        conversation_repository=ConversationRepository(db_session),
+        message_repository=MessageRepository(db_session),
     )
 
 

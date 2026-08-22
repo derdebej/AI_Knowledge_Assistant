@@ -62,7 +62,9 @@ class TestOpenAIEmbeddingProvider:
 
     async def test_input_exceeding_batch_size_splits_into_multiple_calls(self) -> None:
         client = _FakeOpenAIClient()
-        provider = OpenAIEmbeddingProvider(client=client, model="text-embedding-3-small", batch_size=2)
+        provider = OpenAIEmbeddingProvider(
+            client=client, model="text-embedding-3-small", batch_size=2
+        )
 
         result = await provider.embed(["a", "b", "c", "d", "e"])
 

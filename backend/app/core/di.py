@@ -20,7 +20,9 @@ from app.rag.embeddings.openai_embedding_provider import OpenAIEmbeddingProvider
 from app.rag.llm.openai_llm_provider import OpenAILLMProvider
 from app.rag.vector_store.pgvector_store import PgVectorStore
 from app.repositories.chunk_repository import ChunkRepository
+from app.repositories.conversation_repository import ConversationRepository
 from app.repositories.document_repository import DocumentRepository
+from app.repositories.message_repository import MessageRepository
 from app.services.chat_service import ChatService
 from app.services.document_service import DocumentService
 from app.services.ingestion_service import IngestionService
@@ -105,8 +107,27 @@ def get_llm_provider() -> LLMProvider:
     )
 
 
+def get_conversation_repository(session: SessionDep) -> ConversationRepository:
+    return ConversationRepository(session)
+
+
+def get_message_repository(session: SessionDep) -> MessageRepository:
+    return MessageRepository(session)
+
+
 def get_chat_service(
     retrieval_service: Annotated[RetrievalService, Depends(get_retrieval_service)],
     llm_provider: Annotated[LLMProvider, Depends(get_llm_provider)],
+    document_repository: Annotated[DocumentRepository, Depends(get_document_repository)],
+    conversation_repository: Annotated[
+        ConversationRepository, Depends(get_conversation_repository)
+    ],
+    message_repository: Annotated[MessageRepository, Depends(get_message_repository)],
 ) -> ChatService:
-    return ChatService(retrieval_service=retrieval_service, llm_provider=llm_provider)
+    return ChatService(
+        retrieval_service=retrieval_service,
+        llm_provider=llm_provider,
+        document_repository=document_repository,
+        conversation_repository=conversation_repository,
+        message_repository=message_repository,
+    )

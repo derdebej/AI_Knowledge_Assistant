@@ -79,9 +79,7 @@ class TestListDocuments:
         assert {item["original_filename"] for item in body["items"]} == {"a.txt", "b.txt"}
 
     async def test_list_filters_by_status(self, client: AsyncClient) -> None:
-        await client.post(
-            "/api/v1/documents", files={"file": ("ok.txt", b"content", "text/plain")}
-        )
+        await client.post("/api/v1/documents", files={"file": ("ok.txt", b"content", "text/plain")})
         await client.post(
             "/api/v1/documents", files={"file": ("scan.pdf", _blank_pdf_bytes(), "application/pdf")}
         )

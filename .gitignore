@@ -16,6 +16,7 @@ venv/
 htmlcov/
 dist/
 build/
+uvicorn.log
 
 # --- Node / frontend ---
 node_modules/
