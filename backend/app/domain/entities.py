@@ -46,3 +46,28 @@ class RetrievedChunk:
     content: str
     similarity_score: float
     metadata: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class Citation:
+    """A chunk that was included in the prompt shown to the model, with its
+    rank and score - reflects what was shown to the model, not a claim about
+    which specific sentence it drew from (specs/RAG_PIPELINE.md §2.8).
+
+    Carries no `message_id`: that's only assigned when a message is actually
+    persisted (as a `message_citations` row - specs/DATABASE.md §3.7), which
+    is outside ChatService's concern (specs/ROADMAP.md Phase 4 vs Phase 5).
+    """
+
+    chunk_id: str
+    document_id: str
+    similarity_score: float
+    rank: int
+
+
+@dataclass(frozen=True)
+class ChatAnswer:
+    """Result of `ChatService.ask()` - independent of the API/streaming layer."""
+
+    content: str
+    citations: list[Citation]

@@ -14,12 +14,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import Settings, get_settings
 from app.db.session import get_db_session
 from app.documents.storage import LocalFileStorage
-from app.domain.ports import Chunker, EmbeddingProvider
+from app.domain.ports import Chunker, EmbeddingProvider, LLMProvider
 from app.rag.chunking.recursive_chunker import RecursiveCharacterChunker
 from app.rag.embeddings.openai_embedding_provider import OpenAIEmbeddingProvider
+from app.rag.llm.openai_llm_provider import OpenAILLMProvider
 from app.rag.vector_store.pgvector_store import PgVectorStore
 from app.repositories.chunk_repository import ChunkRepository
 from app.repositories.document_repository import DocumentRepository
+from app.services.chat_service import ChatService
 from app.services.document_service import DocumentService
 from app.services.ingestion_service import IngestionService
 from app.services.retrieval_service import RetrievalService
@@ -93,3 +95,18 @@ def get_retrieval_service(
         top_k=settings.retrieval_top_k,
         relevance_threshold=settings.relevance_threshold,
     )
+
+
+@lru_cache
+def get_llm_provider() -> LLMProvider:
+    settings = get_settings()
+    return OpenAILLMProvider(
+        client=get_openai_client(), model=settings.llm_model, temperature=settings.llm_temperature
+    )
+
+
+def get_chat_service(
+    retrieval_service: Annotated[RetrievalService, Depends(get_retrieval_service)],
+    llm_provider: Annotated[LLMProvider, Depends(get_llm_provider)],
+) -> ChatService:
+    return ChatService(retrieval_service=retrieval_service, llm_provider=llm_provider)

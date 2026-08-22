@@ -95,13 +95,13 @@ Each phase lists objectives, tasks (checkboxes), deliverables, dependencies, and
 
 **Objective**: turn retrieved chunks into a grounded, cited answer.
 
-- [ ] Implement `app/rag/prompting/` — system prompt template + context-block assembly per [RAG_PIPELINE.md](RAG_PIPELINE.md) §2.6
-- [ ] Implement `OpenAILLMProvider` (streaming + non-streaming `generate()`)
-- [ ] Implement `FakeLLMProvider` for tests
-- [ ] Implement the "not found" short-circuit (zero chunks above threshold → fixed message, no LLM call) — [RAG_PIPELINE.md](RAG_PIPELINE.md) §5
-- [ ] Implement citation extraction (chunks shown to the model → `message_citations` records)
-- [ ] Unit tests: prompt structure/delimiting, short-circuit path never invokes `LLMProvider`
-- [ ] Integration test: seeded chunks → real retrieval → faked LLM → assert prompt content and citation records
+- [x] Implement `app/rag/prompting/` — system prompt template + context-block assembly per [RAG_PIPELINE.md](RAG_PIPELINE.md) §2.6
+- [x] Implement `OpenAILLMProvider` (streaming + non-streaming `generate()`)
+- [x] Implement `FakeLLMProvider` for tests
+- [x] Implement the "not found" short-circuit (zero chunks above threshold → fixed message, no LLM call) — [RAG_PIPELINE.md](RAG_PIPELINE.md) §5
+- [x] Implement citation extraction (chunks shown to the model → `message_citations` records)
+- [x] Unit tests: prompt structure/delimiting, short-circuit path never invokes `LLMProvider`
+- [x] Integration test: seeded chunks → real retrieval → faked LLM → assert prompt content and citation records
 
 **Deliverables**: a callable `ChatService.ask()` producing a grounded answer + citations, independent of the API/streaming layer.
 **Dependencies**: Phase 3.

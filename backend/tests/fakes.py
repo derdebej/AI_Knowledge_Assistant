@@ -9,6 +9,7 @@ the same swap-the-adapter mechanism used for the real ones.
 import hashlib
 import math
 import uuid
+from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 
 from app.domain.entities import RetrievedChunk
@@ -112,6 +113,34 @@ class FakeVectorStore:
             )
             for chunk, score in scored[:top_k]
         ]
+
+
+class FakeLLMProvider:
+    """Deterministic stand-in for the real LLM: returns a fixed response and
+    records every prompt it's called with, so tests can assert on context
+    inclusion (specs/TESTING.md §5). Construct with `raise_if_called=True` to
+    assert the "not found" short-circuit never reaches generation at all -
+    specs/RAG_PIPELINE.md §5.1."""
+
+    def __init__(
+        self, response: str = "This is a fake answer.", *, raise_if_called: bool = False
+    ) -> None:
+        self._response = response
+        self._raise_if_called = raise_if_called
+        self.received_prompts: list[str] = []
+
+    async def generate(self, prompt: str) -> str:
+        if self._raise_if_called:
+            raise AssertionError("LLMProvider.generate() should not have been called")
+        self.received_prompts.append(prompt)
+        return self._response
+
+    async def stream(self, prompt: str) -> AsyncIterator[str]:
+        if self._raise_if_called:
+            raise AssertionError("LLMProvider.stream() should not have been called")
+        self.received_prompts.append(prompt)
+        for word in self._response.split(" "):
+            yield f"{word} "
 
 
 def _cosine_similarity(a: list[float], b: list[float]) -> float:
