@@ -41,6 +41,16 @@ class Settings(BaseSettings):
     llm_model: str = "gpt-4o-mini"
     llm_temperature: float = 0.2
 
+    # --- Provider overrides (see specs/TECHNOLOGIES.md - EmbeddingProvider
+    # and LLMProvider are swappable ports; these let either point at any
+    # OpenAI-compatible endpoint, e.g. OpenRouter, independently of each
+    # other. An unset `*_api_key` falls back to `openai_api_key`; an unset
+    # `*_base_url` falls back to the OpenAI SDK's default.
+    llm_base_url: str | None = None
+    llm_api_key: str | None = None
+    embedding_base_url: str | None = None
+    embedding_api_key: str | None = None
+
     # --- Retrieval (see specs/RAG_PIPELINE.md §3) ---
     chunk_size: int = 1000
     chunk_overlap: int = 150

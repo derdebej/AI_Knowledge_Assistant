@@ -146,15 +146,15 @@ Each phase lists objectives, tasks (checkboxes), deliverables, dependencies, and
 
 **Objective**: usable UI for the full flow: login, upload, document status, chat, citations.
 
-- [ ] `api/` typed client (fetch wrappers + SSE consumer)
-- [ ] `LoginPage` (login/register forms)
-- [ ] `DocumentUpload` component (drag-drop, client-side type/size pre-check mirroring backend rules, upload progress)
-- [ ] `DocumentList` component (status badges, polling `GET /documents/{id}/status` while `pending`/`processing`)
-- [ ] `ChatWindow` component (message list, input box, per-conversation document scoping picker)
-- [ ] `useStreamingAnswer` hook consuming the SSE endpoint, rendering tokens incrementally
-- [ ] `CitationCard` component (document name, page number, snippet, similarity score)
-- [ ] Distinct UI state for the "not found in your documents" response
-- [ ] Component tests for the above (`vitest` + RTL)
+- [x] `api/` typed client (fetch wrappers + SSE consumer)
+- [x] `LoginPage` (login/register forms)
+- [x] `DocumentUpload` component (drag-drop, client-side type/size pre-check mirroring backend rules, upload progress)
+- [x] `DocumentList` component (status badges, polling `GET /documents/{id}/status` while `pending`/`processing`)
+- [x] `ChatWindow` component (message list, input box, per-conversation document scoping picker)
+- [x] `useStreamingAnswer` hook consuming the SSE endpoint, rendering tokens incrementally
+- [x] `CitationCard` component (document name, page number, similarity score — no snippet: `CitationResponse` doesn't return chunk text, see [API.md](API.md) §3)
+- [x] Distinct UI state for the "not found in your documents" response
+- [x] Component tests for the above (`vitest` + RTL)
 
 **Deliverables**: a working browser UI covering the full MVP user story from [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md).
 **Dependencies**: Phase 6 (needs the full authenticated API).

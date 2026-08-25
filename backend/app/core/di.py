@@ -51,14 +51,18 @@ def get_chunker() -> Chunker:
 
 
 @lru_cache
-def get_openai_client() -> AsyncOpenAI:
-    return AsyncOpenAI(api_key=get_settings().openai_api_key)
+def get_embedding_client() -> AsyncOpenAI:
+    settings = get_settings()
+    return AsyncOpenAI(
+        api_key=settings.embedding_api_key or settings.openai_api_key,
+        base_url=settings.embedding_base_url,
+    )
 
 
 @lru_cache
 def get_embedding_provider() -> EmbeddingProvider:
     settings = get_settings()
-    return OpenAIEmbeddingProvider(client=get_openai_client(), model=settings.embedding_model)
+    return OpenAIEmbeddingProvider(client=get_embedding_client(), model=settings.embedding_model)
 
 
 def get_document_repository(session: SessionDep) -> DocumentRepository:
@@ -102,10 +106,22 @@ def get_retrieval_service(
 
 
 @lru_cache
+def get_llm_client() -> AsyncOpenAI:
+    # Deliberately a separate client from get_embedding_client(): generation
+    # can point at a different OpenAI-compatible endpoint (e.g. OpenRouter)
+    # than embeddings without affecting embeddings, and vice versa.
+    settings = get_settings()
+    return AsyncOpenAI(
+        api_key=settings.llm_api_key or settings.openai_api_key,
+        base_url=settings.llm_base_url,
+    )
+
+
+@lru_cache
 def get_llm_provider() -> LLMProvider:
     settings = get_settings()
     return OpenAILLMProvider(
-        client=get_openai_client(), model=settings.llm_model, temperature=settings.llm_temperature
+        client=get_llm_client(), model=settings.llm_model, temperature=settings.llm_temperature
     )
 
 

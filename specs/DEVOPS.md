@@ -66,9 +66,14 @@ Documented in `.env.example` (committed, no real values) and mirrored in `app/co
 | Variable | Purpose | Required |
 |---|---|---|
 | `DATABASE_URL` | Postgres connection string | Yes |
-| `OPENAI_API_KEY` | OpenAI API access | Yes |
+| `OPENAI_API_KEY` | OpenAI API access (embeddings; also the generation fallback if `LLM_*` below are unset) | Yes |
 | `EMBEDDING_MODEL` | Default `text-embedding-3-small` | No (has default) |
 | `LLM_MODEL` | Default `gpt-4o-mini` | No (has default) |
+| `LLM_BASE_URL` | OpenAI-compatible endpoint override for generation only (e.g. `https://openrouter.ai/api/v1`) - see [TECHNOLOGIES.md](TECHNOLOGIES.md) on `LLMProvider` being a swappable port | No (defaults to OpenAI) |
+| `LLM_API_KEY` | API key for `LLM_BASE_URL` | No (falls back to `OPENAI_API_KEY`) |
+| `EMBEDDING_BASE_URL` | OpenAI-compatible endpoint override for embeddings only, independent of `LLM_BASE_URL` | No (defaults to OpenAI) |
+| `EMBEDDING_API_KEY` | API key for `EMBEDDING_BASE_URL` | No (falls back to `OPENAI_API_KEY`) |
+| `EMBEDDING_DIMENSIONS` | Must match the chosen `EMBEDDING_MODEL`'s output size - changing it requires an Alembic migration to resize `document_chunks.embedding` (`vector(N)`) and its HNSW index | No (has default) |
 | `JWT_SECRET_KEY` | JWT signing secret | Yes |
 | `JWT_EXPIRE_MINUTES` | Default `60` | No |
 | `MAX_UPLOAD_SIZE_MB` | Default `20` | No |

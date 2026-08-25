@@ -12,6 +12,7 @@ import uuid
 from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 
+from app.core.config import get_settings
 from app.domain.entities import RetrievedChunk
 
 
@@ -21,8 +22,11 @@ class FakeEmbeddingProvider:
     similarity ordering in tests is stable and assertable - without any real
     network call."""
 
-    def __init__(self, dimensions: int = 1536) -> None:
-        self._dimensions = dimensions
+    def __init__(self, dimensions: int | None = None) -> None:
+        # Defaults to the active Settings' embedding_dimensions (not a fixed
+        # literal) so the fake always matches whatever dimension the
+        # document_chunks.embedding column was actually migrated to.
+        self._dimensions = dimensions if dimensions is not None else get_settings().embedding_dimensions
 
     async def embed(self, texts: list[str]) -> list[list[float]]:
         return [self._embed_one(text) for text in texts]
