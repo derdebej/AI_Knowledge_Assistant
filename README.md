@@ -91,12 +91,14 @@ Full rationale and alternatives considered for every entry: [specs/TECHNOLOGIES.
 
 Full layer-by-layer explanation: [specs/ARCHITECTURE.md](specs/ARCHITECTURE.md).
 
-## Local setup (planned — once implementation begins)
+## Local setup
+
+### Option A — Docker (full stack)
 
 ```bash
 git clone <repo-url>
 cd ai-knowledge-assistant
-cp .env.example .env        # fill in OPENAI_API_KEY at minimum
+cp backend/.env.example backend/.env   # fill in OPENAI_API_KEY (or the OpenRouter overrides) and JWT_SECRET_KEY
 docker compose up --build
 ```
 
@@ -104,7 +106,62 @@ docker compose up --build
 - Backend API docs: http://localhost:8000/docs
 - Health check: http://localhost:8000/api/v1/health
 
-Backend-only development without Docker (Postgres via Compose, app run locally with `uvicorn app.main:app --reload`) will also be supported for faster iteration.
+### Option B — Backend and frontend run locally (faster iteration)
+
+**Backend:**
+
+```bash
+cd backend
+cp .env.example .env        # fill in DATABASE_URL, OPENAI_API_KEY, JWT_SECRET_KEY
+uv sync                     # or: pip install -e .
+alembic upgrade head        # creates tables, pgvector extension, HNSW index
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Notes:
+- Commands must be run from `backend/` — running `uvicorn` from the repo root fails with `ModuleNotFoundError: No module named 'app'`.
+- `DATABASE_URL` must use the `postgresql+asyncpg://` scheme (not plain `postgresql://`), since the app uses SQLAlchemy's async engine.
+- If pointing `DATABASE_URL` at a pooled connection (e.g. Supabase's pgbouncer endpoint on port `6543`), drop the `?pgbouncer=true` query param — `asyncpg` doesn't accept it as a connect argument — and prefer the direct/session port (`5432`) since `asyncpg`'s prepared-statement usage doesn't play well with pgbouncer's transaction pooling mode.
+- `alembic upgrade head` must be run once against any fresh database before first use, or API calls will fail with `relation "users" does not exist`.
+
+**Frontend** (separate terminal):
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+- Frontend: http://localhost:5173
+- Backend API docs: http://localhost:8000/docs
+- Health check: http://localhost:8000/api/v1/health
+
+### Running tests
+
+```bash
+# Backend
+cd backend
+pytest tests/unit tests/integration --cov=app
+
+# Frontend
+cd frontend
+npm test
+```
+
+### Linting & type-checking
+
+```bash
+# Backend
+cd backend
+ruff check .
+ruff format --check .
+mypy app/
+
+# Frontend
+cd frontend
+npm run lint
+npm run typecheck
+```
 
 ## Environment variables
 

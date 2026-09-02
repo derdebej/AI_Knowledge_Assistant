@@ -1,0 +1,76 @@
+INFO:     Started server process [5656]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+{"method": "POST", "path": "/api/v1/auth/register", "status_code": 201, "duration_ms": 2100.13, "event": "request_completed", "request_id": "7bbe01b5-46c6-4271-a752-ff44dae1fdab", "level": "info", "timestamp": "2026-08-25T11:12:46.647606Z"}
+INFO:     127.0.0.1:61296 - "POST /api/v1/auth/register HTTP/1.1" 201 Created
+{"method": "POST", "path": "/api/v1/auth/login", "status_code": 200, "duration_ms": 1240.0, "event": "request_completed", "request_id": "c877f78a-91fa-45bf-9c90-a413ea01f123", "level": "info", "timestamp": "2026-08-25T11:12:47.902739Z"}
+{"method": "POST", "path": "/api/v1/auth/register", "status_code": 201, "duration_ms": 751.17, "event": "request_completed", "request_id": "994cdbc7-10a0-4633-9723-27956b184cea", "level": "info", "timestamp": "2026-08-25T11:13:46.363834Z"}
+INFO:     127.0.0.1:54740 - "POST /api/v1/auth/register HTTP/1.1" 201 Created
+{"method": "GET", "path": "/api/v1/conversations", "status_code": 200, "duration_ms": 3058.81, "event": "request_completed", "request_id": "9457a84c-3b20-4327-b84a-0ad4d61bdbbb", "level": "info", "timestamp": "2026-08-25T11:13:53.511701Z"}
+INFO:     127.0.0.1:53538 - "GET /api/v1/conversations?limit=50 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 4157.39, "event": "request_completed", "request_id": "0a7dd154-69d6-4a01-9307-aa24f1e6e9d6", "level": "info", "timestamp": "2026-08-25T11:13:54.597359Z"}
+INFO:     127.0.0.1:53537 - "GET /api/v1/documents?limit=100 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 3101.29, "event": "request_completed", "request_id": "dc8f4667-3011-4335-85db-f166f416fe3f", "level": "info", "timestamp": "2026-08-25T11:13:57.706705Z"}
+INFO:     127.0.0.1:64756 - "GET /api/v1/documents?limit=100 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/conversations", "status_code": 200, "duration_ms": 4350.19, "event": "request_completed", "request_id": "64a1c18a-a4b9-4cde-9ef0-5b6c93e58430", "level": "info", "timestamp": "2026-08-25T11:13:57.867743Z"}
+INFO:     127.0.0.1:52536 - "GET /api/v1/conversations?limit=50 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 529.76, "event": "request_completed", "request_id": "92f58ccb-22b2-44b8-a72d-e5170adfbd80", "level": "info", "timestamp": "2026-08-25T11:13:58.250190Z"}
+INFO:     127.0.0.1:55103 - "GET /api/v1/documents?limit=100 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 522.99, "event": "request_completed", "request_id": "4c53fbf4-c01a-44c0-94b9-b7d2414ca576", "level": "info", "timestamp": "2026-08-25T11:13:58.781168Z"}
+INFO:     127.0.0.1:60095 - "GET /api/v1/documents?limit=100 HTTP/1.1" 200 OK
+{"method": "POST", "path": "/api/v1/auth/login", "status_code": 200, "duration_ms": 2905.88, "event": "request_completed", "request_id": "9348c89d-4d22-4c4d-9ffb-6323085891b4", "level": "info", "timestamp": "2026-08-25T11:14:20.987155Z"}
+INFO:     127.0.0.1:59682 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/conversations", "status_code": 200, "duration_ms": 2532.45, "event": "request_completed", "request_id": "8de24c2b-ebfa-4bc3-8c64-a89766f7c7e1", "level": "info", "timestamp": "2026-08-25T11:14:23.547846Z"}
+INFO:     127.0.0.1:52406 - "GET /api/v1/conversations?limit=50 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 2560.95, "event": "request_completed", "request_id": "3eb2073d-6f89-430d-85a7-5b73cd005be3", "level": "info", "timestamp": "2026-08-25T11:14:23.575244Z"}
+INFO:     127.0.0.1:52407 - "GET /api/v1/documents?limit=100 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/conversations", "status_code": 200, "duration_ms": 3519.5, "event": "request_completed", "request_id": "31d59180-58c2-4744-91d6-a8b9b60a860a", "level": "info", "timestamp": "2026-08-25T11:14:27.074534Z"}
+INFO:     127.0.0.1:60686 - "GET /api/v1/conversations?limit=50 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 5604.84, "event": "request_completed", "request_id": "ba29c562-84c1-40b4-b3ed-7b84e36314c0", "level": "info", "timestamp": "2026-08-25T11:14:29.187597Z"}
+INFO:     127.0.0.1:55609 - "GET /api/v1/documents?limit=100 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 1654.71, "event": "request_completed", "request_id": "cc8d98df-5cb7-4016-882b-6f0fd564936c", "level": "info", "timestamp": "2026-08-25T11:14:30.836057Z"}
+INFO:     127.0.0.1:63253 - "GET /api/v1/documents?limit=100 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 524.25, "event": "request_completed", "request_id": "f67c2d60-4200-4631-8e68-38054f44f519", "level": "info", "timestamp": "2026-08-25T11:14:31.380311Z"}
+INFO:     127.0.0.1:52068 - "GET /api/v1/documents?limit=100 HTTP/1.1" 200 OK
+{"method": "POST", "path": "/api/v1/documents", "status_code": 202, "duration_ms": 660.18, "event": "request_completed", "request_id": "f58a686a-e987-4488-8976-e3c6ade96cd7", "level": "info", "timestamp": "2026-08-25T11:14:37.975271Z"}
+INFO:     127.0.0.1:62161 - "POST /api/v1/documents HTTP/1.1" 202 Accepted
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 524.26, "event": "request_completed", "request_id": "8181b3da-898d-4902-a364-437f4a141e72", "level": "info", "timestamp": "2026-08-25T11:14:38.529744Z"}
+INFO:     127.0.0.1:62076 - "GET /api/v1/documents?limit=100 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 617.73, "event": "request_completed", "request_id": "22cdd74b-ad1c-46b7-9773-b7de6730b835", "level": "info", "timestamp": "2026-08-25T11:14:39.155328Z"}
+INFO:     127.0.0.1:53679 - "GET /api/v1/documents?limit=100 HTTP/1.1" 200 OK
+HTTP Request: POST https://openrouter.ai/api/v1/embeddings "HTTP/1.1 200 OK"
+{"method": "GET", "path": "/api/v1/documents/475dfd25-d473-46ad-99f9-a10a6c01bf10/status", "status_code": 200, "duration_ms": 3587.35, "event": "request_completed", "request_id": "b69f97dc-b3f2-4e03-8bac-098937279361", "level": "info", "timestamp": "2026-08-25T11:14:45.132370Z"}
+INFO:     127.0.0.1:51958 - "GET /api/v1/documents/475dfd25-d473-46ad-99f9-a10a6c01bf10/status HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents/475dfd25-d473-46ad-99f9-a10a6c01bf10/status", "status_code": 200, "duration_ms": 2864.79, "event": "request_completed", "request_id": "6f0680ce-face-46ff-a79b-7cbad02a309b", "level": "info", "timestamp": "2026-08-25T11:14:48.004374Z"}
+INFO:     127.0.0.1:60991 - "GET /api/v1/documents/475dfd25-d473-46ad-99f9-a10a6c01bf10/status HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/conversations/36d69fe2-e6d5-41a1-8ec2-9d7ca09b8143/messages", "status_code": 200, "duration_ms": 6125.53, "event": "request_completed", "request_id": "9300f544-a1a7-49a6-aaf3-9ec2f677c7fc", "level": "info", "timestamp": "2026-08-25T11:14:50.853035Z"}
+INFO:     127.0.0.1:52955 - "GET /api/v1/conversations/36d69fe2-e6d5-41a1-8ec2-9d7ca09b8143/messages?limit=100 HTTP/1.1" 200 OK
+{"method": "POST", "path": "/api/v1/auth/register", "status_code": 201, "duration_ms": 670.35, "event": "request_completed", "request_id": "7e24ce2e-cce4-4309-944e-d613adb82c9e", "level": "info", "timestamp": "2026-08-25T11:15:02.650901Z"}
+INFO:     127.0.0.1:52640 - "POST /api/v1/auth/register HTTP/1.1" 201 Created
+{"method": "POST", "path": "/api/v1/auth/login", "status_code": 200, "duration_ms": 693.41, "event": "request_completed", "request_id": "0dc24a26-5e85-405c-9464-d7ac6e3798e9", "level": "info", "timestamp": "2026-08-25T11:15:03.351495Z"}
+INFO:     127.0.0.1:52642 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 695.11, "event": "request_completed", "request_id": "3c88272b-face-4c07-936c-45b5af859e0e", "level": "info", "timestamp": "2026-08-25T11:15:04.099743Z"}
+INFO:     127.0.0.1:52645 - "GET /api/v1/documents?limit=100 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/conversations", "status_code": 200, "duration_ms": 847.08, "event": "request_completed", "request_id": "309d675b-2f0f-4b1a-ab38-1a82d77a9207", "level": "info", "timestamp": "2026-08-25T11:15:04.265590Z"}
+INFO:     127.0.0.1:52646 - "GET /api/v1/conversations?limit=50 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/documents", "status_code": 200, "duration_ms": 525.73, "event": "request_completed", "request_id": "66be08a8-ad4e-4e81-9984-507d879164e3", "level": "info", "timestamp": "2026-08-25T11:15:04.646825Z"}
+{"method": "GET", "path": "/api/v1/conversations", "status_code": 200, "duration_ms": 625.95, "event": "request_completed", "request_id": "4f4b0dda-6f94-4f13-bfae-216adb7c9f8a", "level": "info", "timestamp": "2026-08-25T11:15:04.897475Z"}
+{"method": "GET", "path": "/api/v1/conversations/36d69fe2-e6d5-41a1-8ec2-9d7ca09b8143/messages", "status_code": 200, "duration_ms": 3857.29, "event": "request_completed", "request_id": "f3dd6473-0c6c-4daa-922b-443f5cf708ef", "level": "info", "timestamp": "2026-08-25T11:15:52.128348Z"}
+INFO:     127.0.0.1:58326 - "GET /api/v1/conversations/36d69fe2-e6d5-41a1-8ec2-9d7ca09b8143/messages?limit=100 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/conversations/ba11831f-5772-4eb9-9c94-c28a365c38ed/messages", "status_code": 200, "duration_ms": 5153.5, "event": "request_completed", "request_id": "50af2ee5-65c6-48c9-95cc-23fc056eb342", "level": "info", "timestamp": "2026-08-25T11:15:52.167148Z"}
+INFO:     127.0.0.1:50569 - "GET /api/v1/conversations/ba11831f-5772-4eb9-9c94-c28a365c38ed/messages?limit=100 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/conversations/ba11831f-5772-4eb9-9c94-c28a365c38ed/messages", "status_code": 200, "duration_ms": 2729.81, "event": "request_completed", "request_id": "dbed0de1-8132-4a19-a4df-cbfcf24af134", "level": "info", "timestamp": "2026-08-25T11:15:54.899450Z"}
+INFO:     127.0.0.1:57745 - "GET /api/v1/conversations/ba11831f-5772-4eb9-9c94-c28a365c38ed/messages?limit=100 HTTP/1.1" 200 OK
+{"method": "POST", "path": "/api/v1/conversations", "status_code": 201, "duration_ms": 4635.36, "event": "request_completed", "request_id": "0c01143a-7026-43c0-a6fa-9baba03f5e49", "level": "info", "timestamp": "2026-08-25T11:16:01.029557Z"}
+INFO:     127.0.0.1:56964 - "POST /api/v1/conversations HTTP/1.1" 201 Created
+{"method": "POST", "path": "/api/v1/conversations", "status_code": 201, "duration_ms": 4072.0, "event": "request_completed", "request_id": "a2693546-4b89-447a-9a3b-54d977b509b8", "level": "info", "timestamp": "2026-08-25T11:16:01.235881Z"}
+INFO:     127.0.0.1:65462 - "POST /api/v1/conversations HTTP/1.1" 201 Created
+{"method": "GET", "path": "/api/v1/conversations", "status_code": 200, "duration_ms": 3002.78, "event": "request_completed", "request_id": "5ef085d7-67d5-4a21-ad2e-0a78f3971b08", "level": "info", "timestamp": "2026-08-25T11:16:04.041305Z"}
+INFO:     127.0.0.1:65086 - "GET /api/v1/conversations?limit=50 HTTP/1.1" 200 OK
+{"method": "POST", "path": "/api/v1/conversations", "status_code": 201, "duration_ms": 3611.34, "event": "request_completed", "request_id": "5ebd450b-91ca-4483-8e62-a189949d6fb6", "level": "info", "timestamp": "2026-08-25T11:16:04.041305Z"}
+INFO:     127.0.0.1:53576 - "POST /api/v1/conversations HTTP/1.1" 201 Created
+{"method": "GET", "path": "/api/v1/conversations", "status_code": 200, "duration_ms": 532.64, "event": "request_completed", "request_id": "72094e57-2caf-4114-811e-2f5f6c64e65b", "level": "info", "timestamp": "2026-08-25T11:16:04.581841Z"}
+INFO:     127.0.0.1:50768 - "GET /api/v1/conversations?limit=50 HTTP/1.1" 200 OK
+{"method": "GET", "path": "/api/v1/conversations", "status_code": 200, "duration_ms": 541.45, "event": "request_completed", "request_id": "b8fa1090-4de7-4a15-974c-20f73fb3a159", "level": "info", "timestamp": "2026-08-25T11:16:05.130655Z"}
+INFO:     127.0.0.1:60798 - "GET /api/v1/conversations?limit=50 HTTP/1.1" 200 OK

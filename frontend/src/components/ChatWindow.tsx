@@ -117,25 +117,28 @@ export function ChatWindow({ documentsVersion }: ChatWindowProps) {
   }
 
   return (
-    <div className="flex h-full gap-4">
-      <aside className="flex w-56 shrink-0 flex-col gap-2 border-r border-neutral-200 pr-4">
+    <div className="flex h-full">
+      <aside className="flex w-60 shrink-0 flex-col gap-1.5 border-r border-white/10 p-3">
         <button
           type="button"
           onClick={() => setPickerOpen(true)}
-          className="rounded bg-neutral-900 px-3 py-2 text-sm font-medium text-white"
+          className="mb-2 flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-3 py-2 text-sm font-medium text-white shadow-md shadow-violet-600/20 transition-all hover:brightness-110 active:scale-[0.98]"
         >
+          <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
           New conversation
         </button>
-        <ul className="flex flex-col gap-1 overflow-y-auto">
+        <ul className="flex flex-1 flex-col gap-0.5 overflow-y-auto">
           {conversations.map((conversation) => (
             <li key={conversation.id}>
               <button
                 type="button"
                 onClick={() => void handleSelectConversation(conversation.id)}
-                className={`w-full truncate rounded px-2 py-1 text-left text-sm ${
+                className={`w-full truncate rounded-lg px-2.5 py-2 text-left text-sm transition-colors ${
                   activeConversationId === conversation.id
-                    ? 'bg-neutral-200 text-neutral-900'
-                    : 'text-neutral-600 hover:bg-neutral-100'
+                    ? 'bg-white/[0.08] text-white'
+                    : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-200'
                 }`}
               >
                 {conversation.title ?? 'Untitled conversation'}
@@ -145,41 +148,44 @@ export function ChatWindow({ documentsVersion }: ChatWindowProps) {
         </ul>
       </aside>
 
-      <section className="flex flex-1 flex-col">
+      <section className="flex flex-1 flex-col p-4">
         {isPickerOpen && (
-          <div className="mb-3 rounded border border-neutral-200 p-3">
-            <p className="mb-2 text-sm font-medium">
-              Scope this conversation to specific documents (optional - leave empty to search all
-              of your completed documents).
+          <div className="mb-3 animate-fade-in-up rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <p className="mb-3 text-sm text-slate-300">
+              Scope this conversation to specific documents{' '}
+              <span className="text-slate-500">(optional — leave empty to search all of your completed documents)</span>
             </p>
             <ul className="mb-3 flex max-h-40 flex-col gap-1 overflow-y-auto">
               {documents.map((doc) => (
-                <li key={doc.id} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={selectedDocumentIds.includes(doc.id)}
-                    onChange={() => toggleDocumentSelection(doc.id)}
-                    aria-label={`Scope to ${doc.original_filename}`}
-                  />
-                  {doc.original_filename}
+                <li key={doc.id}>
+                  <label className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-slate-300 hover:bg-white/[0.04]">
+                    <input
+                      type="checkbox"
+                      checked={selectedDocumentIds.includes(doc.id)}
+                      onChange={() => toggleDocumentSelection(doc.id)}
+                      aria-label={`Scope to ${doc.original_filename}`}
+                      className="h-3.5 w-3.5 accent-violet-500"
+                    />
+                    {doc.original_filename}
+                  </label>
                 </li>
               ))}
               {documents.length === 0 && (
-                <li className="text-xs text-neutral-400">Upload a document first.</li>
+                <li className="px-2 py-1 text-xs text-slate-500">Upload a document first.</li>
               )}
             </ul>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => void handleCreateConversation()}
-                className="rounded bg-neutral-900 px-3 py-1.5 text-sm text-white"
+                className="rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-3.5 py-1.5 text-sm font-medium text-white transition-all hover:brightness-110 active:scale-[0.98]"
               >
                 Start
               </button>
               <button
                 type="button"
                 onClick={() => setPickerOpen(false)}
-                className="rounded border border-neutral-300 px-3 py-1.5 text-sm"
+                className="rounded-lg border border-white/10 px-3.5 py-1.5 text-sm text-slate-300 transition-colors hover:bg-white/[0.05]"
               >
                 Cancel
               </button>
@@ -188,31 +194,47 @@ export function ChatWindow({ documentsVersion }: ChatWindowProps) {
         )}
 
         {!activeConversationId && !isPickerOpen && (
-          <p className="text-sm text-neutral-400">Select a conversation or start a new one.</p>
+          <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.03]">
+              <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7 text-slate-600">
+                <path
+                  d="M8 10h8M8 14h5M21 12c0 4.418-4.03 8-9 8-1.06 0-2.077-.163-3.02-.463L3 21l1.5-4.5C3.55 15.077 3 13.582 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <p className="text-sm text-slate-500">Select a conversation or start a new one.</p>
+          </div>
         )}
 
         {activeConversationId && (
           <>
-            <div className="flex-1 overflow-y-auto rounded border border-neutral-200 p-4">
-              {loadError && <p className="text-sm text-red-600">{loadError}</p>}
-              <ul className="flex flex-col gap-3">
+            <div className="flex-1 space-y-3 overflow-y-auto rounded-xl border border-white/10 bg-black/10 p-4">
+              {loadError && <p className="text-sm text-red-400">{loadError}</p>}
+              <ul className="flex flex-col gap-4">
                 {messages.map((message) => {
                   const messageIsNotFound = message.content === NOT_FOUND_MESSAGE
                   return (
-                    <li key={message.id} className={message.role === 'user' ? 'text-right' : 'text-left'}>
+                    <li
+                      key={message.id}
+                      className={`animate-fade-in-up ${message.role === 'user' ? 'text-right' : 'text-left'}`}
+                    >
                       <div
-                        className={`inline-block max-w-[80%] rounded-lg px-3 py-2 text-sm ${
+                        className={`inline-block max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                           message.role === 'user'
-                            ? 'bg-neutral-900 text-white'
+                            ? 'rounded-br-md bg-gradient-to-br from-violet-600 to-blue-600 text-white shadow-md shadow-violet-600/15'
                             : messageIsNotFound
-                              ? 'border border-amber-300 bg-amber-50 text-amber-800'
-                              : 'bg-neutral-100 text-neutral-900'
+                              ? 'rounded-bl-md border border-amber-400/25 bg-amber-500/10 text-amber-200'
+                              : 'rounded-bl-md bg-white/[0.06] text-slate-100'
                         }`}
                       >
                         {message.content}
                       </div>
                       {message.citations && message.citations.length > 0 && (
-                        <div className="mt-1 flex flex-col gap-1">
+                        <div className="mt-1.5 flex flex-col gap-1">
                           {message.citations.map((citation) => (
                             <CitationCard key={citation.chunk_id} citation={citation} />
                           ))}
@@ -223,20 +245,28 @@ export function ChatWindow({ documentsVersion }: ChatWindowProps) {
                 })}
 
                 {streamStatus !== 'idle' && (
-                  <li className="text-left">
+                  <li className="animate-fade-in-up text-left">
                     <div
                       data-testid="streaming-message"
-                      className={`inline-block max-w-[80%] rounded-lg px-3 py-2 text-sm ${
+                      className={`inline-block max-w-[80%] whitespace-pre-wrap rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed ${
                         isNotFound
-                          ? 'border border-amber-300 bg-amber-50 text-amber-800'
-                          : 'bg-neutral-100 text-neutral-900'
+                          ? 'border border-amber-400/25 bg-amber-500/10 text-amber-200'
+                          : 'bg-white/[0.06] text-slate-100'
                       }`}
                     >
-                      {streamContent || (streamStatus === 'streaming' ? 'Thinking...' : '')}
-                      {streamStatus === 'error' && <span className="text-red-600"> {streamError}</span>}
+                      {streamContent || (
+                        streamStatus === 'streaming' && (
+                          <span className="inline-flex items-center gap-1">
+                            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:-0.3s]" />
+                            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:-0.15s]" />
+                            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400" />
+                          </span>
+                        )
+                      )}
+                      {streamStatus === 'error' && <span className="text-red-400"> {streamError}</span>}
                     </div>
                     {streamCitations.length > 0 && (
-                      <div className="mt-1 flex flex-col gap-1">
+                      <div className="mt-1.5 flex flex-col gap-1">
                         {streamCitations.map((citation) => (
                           <CitationCard key={citation.chunk_id} citation={citation} />
                         ))}
@@ -253,13 +283,13 @@ export function ChatWindow({ documentsVersion }: ChatWindowProps) {
                 onChange={(event) => setInput(event.target.value)}
                 placeholder="Ask a question about your documents..."
                 aria-label="Question"
-                className="flex-1 rounded border border-neutral-300 px-3 py-2 text-sm"
+                className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition-all focus:border-violet-400/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-violet-500/20"
                 maxLength={2000}
               />
               <button
                 type="submit"
                 disabled={streamStatus === 'streaming' || !input.trim()}
-                className="rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+                className="flex items-center justify-center rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-md shadow-violet-600/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:brightness-100"
               >
                 Send
               </button>
